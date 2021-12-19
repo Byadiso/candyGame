@@ -1,0 +1,36 @@
+:root{
+  --backgroundColor: rgb(191, 191, 231);
+  --borderColor: rgb(93, 93, 139)
+}
+
+
+.app{
+  display: flex;
+  padding: 30px;
+}
+
+.game{
+  width: 560px;
+  height: 560px;
+  display: flex;
+  flex-wrap: wrap;
+  background-color: var(--backgroundColor);
+  padding: 10px;
+}
+
+.game img{
+  width: 70px;
+  height: 70px;
+}
+
+.boardScore{
+  background-color: var(--backgroundColor);
+  width: 200px;
+  color: aliceblue;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 20px;
+  border: 10px var(--borderColor) solid;
+}
