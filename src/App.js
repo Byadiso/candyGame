@@ -173,13 +173,19 @@ const App = () => {
       squareBeingReplaced.getAttribute("src");
 
     const validMoves = [
-      squareBeingDraggedId - 1,
-      squareBeingDraggedId + 1,
-      squareBeingDraggedId - width,
-      squareBeingDraggedId + width,
+      squareBeingReplacedId - 1,
+      squareBeingReplacedId + 1,
+      squareBeingReplacedId,
+      squareBeingReplacedId - width,
+      squareBeingReplacedId + width,
     ];
-    console.log(squareBeingDraggedId);
-    const validMove = validMoves.includes(squareBeingReplacedId);
+
+    const validMove = validMoves.includes(squareBeingDraggedId, 0);
+    // const validMove = validMoves.includes(squareBeingDraggedId);
+    console.log(validMoves.includes(squareBeingDraggedId, 0));
+    console.log(validMove);
+    console.log(squareBeingDraggedId + " being draggd");
+    console.log(squareBeingReplacedId + " being replaced");
 
     const isRowOfFour = checkForRowsOfFour();
     const isColumnOfFour = checkForColumnOfFour();
@@ -187,19 +193,21 @@ const App = () => {
     const isColumnfThree = checkForColumnOfThree();
 
     if (
-      squareBeingDraggedId &&
       squareBeingReplacedId &&
+      squareBeingDraggedId &&
       validMove &&
       (isColumnOfFour || isColumnfThree || isRowOfFour || isRowOfThree)
     ) {
       setSquareBeingReplaced(null);
-      setSquareBeingDragged(null); //changed this to being gradded to check the effect
+      setSquareBeingDragged(null);
+      console.log("valid move"); //changed this to being gradded to check the effect
     } else {
       currentColorArrangement[squareBeingReplacedId] =
         squareBeingReplaced.getAttribute("src");
       currentColorArrangement[squareBeingDraggedId] =
         squareBeingDragged.getAttribute("src");
       setCurrentColorArrangement([...currentColorArrangement]);
+      console.log("not a vaid move");
     }
 
     //check for moves and reduce 1
@@ -209,7 +217,11 @@ const App = () => {
       validMove &&
       (isColumnOfFour || isColumnfThree || isRowOfFour || isRowOfThree)
     ) {
-      setMoves(moves - 1);
+      if (moves === 0) {
+        return;
+      } else {
+        setMoves(moves - 1);
+      }
     }
   };
 
@@ -226,12 +238,21 @@ const App = () => {
 
   //checking for gameover
   let isGameOver = moves === 0;
-  if (isGameOver) {
-    SetGameOver(true);
-    setHighScore(scoreDisplay);
-  }
+  let GameOverChek = () => {
+    if (isGameOver) {
+      SetGameOver(true);
+      setHighScore(scoreDisplay);
+      return;
+    }
+  };
+  // pause and restart login
 
-  //-----------------//
+  const restart = () => {
+    console.log("game restarted");
+  };
+  const pause = () => {
+    console.log("game paused");
+  };
   //render my board when the screen renders
 
   useEffect(() => {
@@ -246,18 +267,21 @@ const App = () => {
       checkForRowsOfThree();
       moveIntoSquareBelow();
       setCurrentColorArrangement([...currentColorArrangement]);
+      GameOverChek();
       setHighScore(highScore);
     }, 100);
     // we need to return clearInterval in order to stope check game logic
     return () => clearInterval(timer);
   }, [
     checkForRowsOfFour,
+    checkForColumnOfFour,
     checkForColumnOfThree,
     checkForRowsOfThree,
     moveIntoSquareBelow,
     currentColorArrangement,
     highScore,
     scoreDisplay,
+    GameOverChek,
   ]);
 
   return (
@@ -281,7 +305,13 @@ const App = () => {
       </div>
       <div className="boardScore">
         <ScoreBoard score={scoreDisplay} />
-        <WinLogic scores={highScore} moves={moves} endGame={isGameOver} />
+        <WinLogic
+          scores={scoreDisplay}
+          moves={moves}
+          endGame={isGameOver}
+          restart={restart}
+          pause={pause}
+        />
         <p>{gameOver}</p>
       </div>
     </div>
